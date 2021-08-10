@@ -37,21 +37,22 @@ router.post("/uploadfiles", (req, res) => {
         if (err) {
             return res.json({ success: false, err })
         }
-        return res.json({ success: true, filePath: res.req.file.path, fileName: res.req.file.filename })
+        return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename })
     })
 
 });
 
 
-router.post("thumbnail", (req, res) => {
+router.post("/thumbnail", (req, res) => {
 
     let filePath = "";
     let fileDuration = "";
-    
+
+    console.log('====================')
 
     // 비디오 정보 가져오기
     ffmpeg.ffprobe(req.body.url, function (err, metadata){
-        console.log(metadata);
+        console.log("meta     : " + JSON.stringify(metadata));
         console.log(metadata.format.duration);
         fileDuration = metadata.format.duration;
     })
@@ -59,14 +60,14 @@ router.post("thumbnail", (req, res) => {
     // 썸네일 생성
     ffmpeg(req.body.url)
     .on('filenames', function (filenames) {
-        console.log('Will generate ' + filenames.join(', '))
+        console.log('Will generate ' + filenames.join(', '));
         console.log(filenames)
 
         filePath = "uploads/thumbnails/" + filenames[0]
     })
     .on('end', function() {
         console.log('Screenshots taken');
-        return res.json({ success: true, url: filePath, fileName : filenames, fileDuration : fileDuration});
+        return res.json({ success: true, url: filePath, fileDuration : fileDuration});
     })
     .on('error', function (err) {
         console.error(err);
