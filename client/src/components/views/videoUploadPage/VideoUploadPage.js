@@ -54,12 +54,15 @@ function VideoUploadPage() {
         Axios.post('/api/video/uploadfiles', formData, config)
             .then(response => {
                 if(response.data.success){
-                    console.log(response.data);
+                    console.log("response.data " + JSON.stringify(response.data ));
 
                     let variable = {
                         url : response.data.url,
                         fileName : response.data.fileName
                     }
+
+
+                    console.log("variable===" + JSON.stringify(variable));
 
                     Axios.post('/api/video/thumbnail', variable)
                     .then(response => {
